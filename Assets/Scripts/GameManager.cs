@@ -1,0 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    [SerializeField] private InputManager inputManager;
+    [SerializeField] private GridManager BaseTileLayerManager;
+
+    private void Awake()
+    {
+        inputManager.Construct();
+        BaseTileLayerManager.Construct(inputManager);
+    }
+}

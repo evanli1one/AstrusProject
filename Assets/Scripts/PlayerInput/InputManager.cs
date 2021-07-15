@@ -1,141 +1,70 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class InputManager : MonoBehaviour
 {
-    public Vector2 rawVector;
-    public float magnitude;
-    public Vector2 direction;
-
-    public BindObject thisSelection;
-    public BindObject currentSelection;
-    public BindObject previousSelection;
-
-    public bool newMovementData;
-    public bool newSelectionData;
-
-    [SerializeField] private float zeroThreshold = 0.01f;
-    [SerializeField] private LayerMask selectMask;
+    public GameplayControls gameplayControls;
     [SerializeField] private GameObject cameraTarget;
+    
+    [HideInInspector] public Vector2 moveInput;
+    [HideInInspector] public UnityEvent onStopMoveInput;
+    [HideInInspector] public bool newMoveInput;
 
-    public UnityEvent onResetSelection = new UnityEvent();
-    public UnityEvent onSelection = new UnityEvent();
-    public UnityEvent onDoubleSelection = new UnityEvent();
-    public UnityEvent onNewPreviousSelection = new UnityEvent();
-
-    private void Awake()
+    public void Construct()
     {
-        
+        gameplayControls = new GameplayControls();
+        gameplayControls.PlayerActionMap.MoveHCell.performed
+            += context => MoveHorizontal(context.ReadValue<float>());
+
+        gameplayControls.Enable();
+    }
+
+    private void MoveHorizontal(float testNum)
+    {
+        //print("testNum: " + testNum);
     }
 
     private void Update()
     {
-        MovementInput();
-        SelectionInput();
+        moveInput = gameplayControls.PlayerActionMap
+            .MovePlayer.ReadValue<Vector2>();
 
-        UpdateMouseData();
-        UpdateMovementData();
+        UpdateMoveInput();
     }
 
-    private void MovementInput()
+    private void OnEnable()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        Vector3 tempHorizontal = new Vector3(horizontal, 0, 0);
-        Vector3 tempVertical = new Vector3(0, 0, vertical);
-
-        Vector3 forward = Vector3.Normalize(cameraTarget.transform.forward);
-        Vector3 right = Quaternion.Euler(new Vector3(0, 90, 0)) * forward;
-
-        tempVertical = Vector3.Project(tempVertical, forward);
-        tempHorizontal = Vector3.Project(tempHorizontal, right);
-
-        rawVector = new Vector2(tempHorizontal.x + tempVertical.x,
-            tempHorizontal.z + tempVertical.z);
-    }
-
-    private void SelectionInput()
-    {
-        if (Input.GetMouseButtonDown(0))
+        if(gameplayControls != null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            bool raycast = Physics.Raycast(ray, out hit, Mathf.Infinity, selectMask);
-            if (raycast)
-            {
-                thisSelection = hit.transform.gameObject.GetComponent<BindObject>();
-            }
-            else
-            {
-                thisSelection = null;
-                ResetSelections();
-            }
+            gameplayControls.Enable();
         }
     }
 
-    private void UpdateMouseData()
+    private void OnDisable()
     {
-        newSelectionData = false;
-
-        if (thisSelection == null)
-        {
-            
-        }
-        else if(thisSelection != currentSelection &&
-                thisSelection != currentSelection)
-        {
-            newSelectionData = true;
-            onSelection.Invoke();
-            UpdateSelections();
-        }
+        gameplayControls.Disable();
     }
 
-    private void UpdateMovementData()
+    private void UpdateMoveInput()
     {
-        if (rawVector != Vector2.zero)
+        if (moveInput.Equals(Vector2.zero))
         {
-            newMovementData = true;
+            newMoveInput = false;
 
-            magnitude = rawVector.magnitude;
-            magnitude = Mathf.InverseLerp(0, 1, magnitude);
-
-            if (magnitude < zeroThreshold)
-            {
-                magnitude = 0f;
-            }
-
-            direction = rawVector;
-            direction.Normalize();
+            onStopMoveInput.Invoke();
         }
         else
         {
-            newMovementData = false;
-        }
-    }
+            newMoveInput = true;
 
-    public void ResetSelections()
-    {
-        onResetSelection.Invoke();
-        currentSelection = null;
-        previousSelection = null;
-    }
+            Quaternion rotation = cameraTarget.transform.rotation;
+            Vector3 moveInput3D = new Vector3(moveInput.x, 0, moveInput.y);
 
-    public void UpdateSelections()
-    {
-        if(previousSelection != null)
-        {
-            onNewPreviousSelection.Invoke();
-        }
+            moveInput3D = rotation * moveInput3D;
 
-        previousSelection = currentSelection;
-        currentSelection = thisSelection;
-
-        if(previousSelection != null && currentSelection != null)
-        {
-            onDoubleSelection.Invoke();
+            moveInput = new Vector2(moveInput3D.x, moveInput3D.z);
         }
     }
 }

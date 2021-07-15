@@ -14,58 +14,46 @@ public class WalkingController : MonoBehaviour
     [SerializeField] private float slowRate;
 
     // References
-    [Tooltip("Required reference to inputManager")]
-    [SerializeField] private InputManager inputManager;
-    [SerializeField] GameObject cameraTarget;
+    [SerializeField] InputManager inputManager;
     private Rigidbody rigidbody;
 
     [SerializeField] private Text debugText0;
     [SerializeField] private Text debugText1;
-    [SerializeField] private Text debugText3;
+    [SerializeField] private Text debugText2;
 
-    private Vector2 slowVector2D;
     private Vector2 moveVector2D;
-    private bool isSlowing = false;
-
-    private Vector3 camForward;
-    private Vector3 camRight;
 
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
-
-        camForward = cameraTarget.transform.forward;
-        camForward.Normalize();
-        camRight = Quaternion.Euler(new Vector3(0, 90, 0)) * camForward;
     }
 
     private void Update()
     {
-        if (inputManager.newMovementData)
+        debugText2.text = "inputManager.newMoveInput: " + inputManager.newMoveInput;
+        if (inputManager.newMoveInput)
         {
-            isSlowing = false;
-            Move();
+            Move(inputManager.moveInput);
             Rotate();
-
-            debugText1.text = "Move";
         }
         else
         {
             Slow();
-            debugText1.text = "Slow";
         }
 
-        debugText0.text = moveVector2D.ToString();
+        Vector3 newVelocity = new Vector3(moveVector2D.x, 0, moveVector2D.y);
 
-        rigidbody.velocity = new Vector3(moveVector2D.x, 0, moveVector2D.y);
+        rigidbody.velocity = newVelocity;
+
+        debugText1.text = "newVelocity: " + newVelocity;
     }
 
-    private void Move()
+    private void Move(Vector2 inputVector)
     {
-        moveVector2D += inputManager.direction * inputManager.magnitude * moveAccel * Time.deltaTime;
-        moveVector2D = Vector2.ClampMagnitude(moveVector2D, maxSpeed);
+        debugText0.text = "inputVector: " + inputVector;
 
-        rigidbody.velocity = new Vector3(moveVector2D.x, 0, moveVector2D.y);
+        moveVector2D += inputVector * moveAccel * Time.deltaTime;
+        moveVector2D = Vector2.ClampMagnitude(moveVector2D, maxSpeed);
     }
 
     private void Rotate()
@@ -79,22 +67,13 @@ public class WalkingController : MonoBehaviour
 
     private void Slow()
     {
-        if (isSlowing)
-        {
-            Vector2 direction = moveVector2D;
-            direction.Normalize();
-            moveVector2D -= camForward * direction * slowRate * Time.deltaTime;
+        Vector2 direction = moveVector2D;
+        direction.Normalize();
+        moveVector2D -= direction * slowRate * Time.deltaTime;
 
-            if(moveVector2D.magnitude < 0.1)
-            {
-                moveVector2D = Vector2.zero;
-                isSlowing = false;
-            }
-        }
-        else
+        if(moveVector2D.magnitude < 0.1)
         {
-            isSlowing = true;
-            slowVector2D = moveVector2D;
+            moveVector2D = Vector2.zero;
         }
     }
 }
