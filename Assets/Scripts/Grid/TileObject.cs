@@ -29,8 +29,6 @@ public class TileObject : MonoBehaviour
 
     private void Move(Vector2Int direction, int tileDistance)
     {
-        print("Move: " + direction + " " + tileDistance);
-
         Vector3Int oldPosition = gridPosition;
         Vector3Int tileDisplacement = new Vector3Int(direction.x, 0, direction.y) * tileDistance;
         Vector3Int destinationTile = oldPosition + tileDisplacement;

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Quantifier: BindObject
+public class Quantifier: LinkObject
 {
-    private new void Awake()
+    public new void Construct(Material highlightMaterial)
     {
-        base.Awake();
+        base.Construct(highlightMaterial);
 
         if (value < 0)
         {

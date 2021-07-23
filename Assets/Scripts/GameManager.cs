@@ -5,11 +5,13 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private InputManager inputManager;
-    [SerializeField] private GridManager BaseTileLayerManager;
+    [SerializeField] private GridManager baseTileLayerManager;
+    [SerializeField] private LinkObjectManager linkObjectManager;
 
     private void Awake()
     {
         inputManager.Construct();
-        BaseTileLayerManager.Construct(inputManager);
+        baseTileLayerManager.Construct(inputManager);
+        linkObjectManager.Construct();
     }
 }

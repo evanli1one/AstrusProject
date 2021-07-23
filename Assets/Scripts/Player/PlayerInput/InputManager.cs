@@ -12,18 +12,29 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public UnityEvent onStopMoveInput;
     [HideInInspector] public bool newMoveInput;
 
+    [HideInInspector] public UnityEvent onLClickInput;
+
     public void Construct()
     {
         gameplayControls = new GameplayControls();
+
         gameplayControls.PlayerActionMap.MoveHCell.performed
             += context => MoveHorizontal(context.ReadValue<float>());
 
         gameplayControls.Enable();
+
+        gameplayControls.PlayerActionMap.LClick.performed
+            += context => onLClickInput.Invoke();
     }
 
     private void MoveHorizontal(float testNum)
     {
         //print("testNum: " + testNum);
+    }
+
+    public void LCLickCallback()
+    {
+
     }
 
     private void Update()

@@ -41,6 +41,22 @@ public class @GameplayControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""LClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""bad81604-4857-40fc-92dc-ed4540868e7c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Spacebar"",
+                    ""type"": ""Button"",
+                    ""id"": ""9385b6fb-7f7b-49bf-b6e6-8f08e09bb8e8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -164,6 +180,28 @@ public class @GameplayControls : IInputActionCollection, IDisposable
                     ""action"": ""MoveVCell"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""522dc153-a1cb-42ac-a0f0-b5a499a7fa19"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b05ce0e3-e179-4ed7-839f-ef9269dfbbb4"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spacebar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -175,6 +213,8 @@ public class @GameplayControls : IInputActionCollection, IDisposable
         m_PlayerActionMap_MovePlayer = m_PlayerActionMap.FindAction("MovePlayer", throwIfNotFound: true);
         m_PlayerActionMap_MoveHCell = m_PlayerActionMap.FindAction("MoveHCell", throwIfNotFound: true);
         m_PlayerActionMap_MoveVCell = m_PlayerActionMap.FindAction("MoveVCell", throwIfNotFound: true);
+        m_PlayerActionMap_LClick = m_PlayerActionMap.FindAction("LClick", throwIfNotFound: true);
+        m_PlayerActionMap_Spacebar = m_PlayerActionMap.FindAction("Spacebar", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -227,6 +267,8 @@ public class @GameplayControls : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerActionMap_MovePlayer;
     private readonly InputAction m_PlayerActionMap_MoveHCell;
     private readonly InputAction m_PlayerActionMap_MoveVCell;
+    private readonly InputAction m_PlayerActionMap_LClick;
+    private readonly InputAction m_PlayerActionMap_Spacebar;
     public struct PlayerActionMapActions
     {
         private @GameplayControls m_Wrapper;
@@ -234,6 +276,8 @@ public class @GameplayControls : IInputActionCollection, IDisposable
         public InputAction @MovePlayer => m_Wrapper.m_PlayerActionMap_MovePlayer;
         public InputAction @MoveHCell => m_Wrapper.m_PlayerActionMap_MoveHCell;
         public InputAction @MoveVCell => m_Wrapper.m_PlayerActionMap_MoveVCell;
+        public InputAction @LClick => m_Wrapper.m_PlayerActionMap_LClick;
+        public InputAction @Spacebar => m_Wrapper.m_PlayerActionMap_Spacebar;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -252,6 +296,12 @@ public class @GameplayControls : IInputActionCollection, IDisposable
                 @MoveVCell.started -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnMoveVCell;
                 @MoveVCell.performed -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnMoveVCell;
                 @MoveVCell.canceled -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnMoveVCell;
+                @LClick.started -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnLClick;
+                @LClick.performed -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnLClick;
+                @LClick.canceled -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnLClick;
+                @Spacebar.started -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnSpacebar;
+                @Spacebar.performed -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnSpacebar;
+                @Spacebar.canceled -= m_Wrapper.m_PlayerActionMapActionsCallbackInterface.OnSpacebar;
             }
             m_Wrapper.m_PlayerActionMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -265,6 +315,12 @@ public class @GameplayControls : IInputActionCollection, IDisposable
                 @MoveVCell.started += instance.OnMoveVCell;
                 @MoveVCell.performed += instance.OnMoveVCell;
                 @MoveVCell.canceled += instance.OnMoveVCell;
+                @LClick.started += instance.OnLClick;
+                @LClick.performed += instance.OnLClick;
+                @LClick.canceled += instance.OnLClick;
+                @Spacebar.started += instance.OnSpacebar;
+                @Spacebar.performed += instance.OnSpacebar;
+                @Spacebar.canceled += instance.OnSpacebar;
             }
         }
     }
@@ -274,5 +330,7 @@ public class @GameplayControls : IInputActionCollection, IDisposable
         void OnMovePlayer(InputAction.CallbackContext context);
         void OnMoveHCell(InputAction.CallbackContext context);
         void OnMoveVCell(InputAction.CallbackContext context);
+        void OnLClick(InputAction.CallbackContext context);
+        void OnSpacebar(InputAction.CallbackContext context);
     }
 }
