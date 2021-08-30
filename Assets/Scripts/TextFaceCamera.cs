@@ -9,10 +9,10 @@ public class TextFaceCamera : MonoBehaviour
 
     private void Awake()
     {
-        gameObject.transform.rotation = cameraTarget.transform.rotation;
+        //gameObject.transform.rotation = cameraTarget.transform.rotation;
 
-        gameObject.transform.eulerAngles = new Vector3(
-            playerCamera.transform.eulerAngles.x,
-            cameraTarget.transform.eulerAngles.y, 0);
+        //gameObject.transform.eulerAngles = new Vector3(
+        //    playerCamera.transform.eulerAngles.x,
+        //    cameraTarget.transform.eulerAngles.y, 0);
     }
 }

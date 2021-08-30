@@ -9,25 +9,41 @@ public class LinkObjectManager : MonoBehaviour
     private List<LinkObject> linkObjectList =
         new List<LinkObject>();
 
+    private Dictionary<Qualifier, Quantifier> linksDict =
+        new Dictionary<Qualifier, Quantifier>();
+
     public void Construct()
     {
-        var foundLinkObjects = FindObjectsOfType<LinkObject>(true);
+        var foundLinkObjects = FindObjectsOfType<LinkObject>();
 
         foreach(LinkObject linkObject in foundLinkObjects)
         {
             linkObjectList.Add(linkObject);
-
             linkObject.Construct(highlightMaterial);
+
+            LinkObject linked = linkObject.linked;
+
+            if (linkObject.GetType() == typeof(Qualifier) &&
+                linked != null)
+            {
+                linksDict.Add((Qualifier)linkObject,
+                    (Quantifier)linked);
+            }
         }
     }
 
-    public void Remove(LinkObject linkObject)
+    public void AddObject(LinkObject linkObject)
+    {
+        linkObjectList.Add(linkObject);
+    }
+
+    public void RemoveObject(LinkObject linkObject)
     {
         linkObjectList.Remove(linkObject);
     }
 
-    public void Add(LinkObject linkObject)
+    public void AddLink(Qualifier key, Quantifier value)
     {
-        linkObjectList.Add(linkObject);
+        linksDict.Add(key, value);
     }
 }

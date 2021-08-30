@@ -31,15 +31,12 @@ public class LinkController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print("Enter");
         if (layerMask.Contains(other.gameObject.layer))
         {
-            print("Layer mask contains");
             LinkObject nearObject = other.gameObject
                 .GetComponent<LinkObject>();
             if (nearObject != null)
             {
-                print("Found nearObject");
                 PrepareSelection(nearObject);
                 MakeSelection(nearObject);
             }
@@ -48,7 +45,6 @@ public class LinkController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        print("Exit");
         if (layerMask.Contains(other.gameObject.layer))
         {
             LinkObject nearObject = other.gameObject
@@ -87,8 +83,8 @@ public class LinkController : MonoBehaviour
         if(currentSelection != null
             && previousSelection != null)
         {
-            currentSelection.SetBind(previousSelection);
-            previousSelection.SetBind(currentSelection);
+            currentSelection.SetLink(previousSelection);
+            previousSelection.SetLink(currentSelection);
 
             ResetSelections();
         }

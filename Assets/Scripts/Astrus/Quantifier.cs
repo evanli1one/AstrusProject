@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Quantifier: LinkObject
 {
-    public new void Construct(Material highlightMaterial)
+    public override void Construct(Material highlightMaterial)
     {
         base.Construct(highlightMaterial);
 
@@ -12,5 +12,11 @@ public class Quantifier: LinkObject
         {
             Debug.LogError("Quantifier cannot have negative value");
         }
+    }
+
+    public override void SetLink(LinkObject linkObject)
+    {
+        base.SetLink(linkObject);
+        UpdateLinkParticles();
     }
 }

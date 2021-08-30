@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Qualifier: LinkObject
 {
-    public new void Construct(Material highlightMaterial)
+    public UnityEvent OnChangeLink = new UnityEvent();
+
+    public override void Construct(Material highlightMaterial)
     {
         base.Construct(highlightMaterial);
 
@@ -13,19 +16,28 @@ public class Qualifier: LinkObject
             Debug.LogError("Qualifier cannot have null name");
         }
 
-        if (linkObject != null)
+        if (linked != null)
         {
-            SetBind(linkObject);
+            SetLink(linked);
         }
+
+        OnChangeLink.AddListener(OnChangeLinkCallback);
     }
 
-    public override void SetBind(LinkObject bindObject)
+    public override void SetLink(LinkObject linkObject)
     {
-        UpdateBindValue(bindObject);
+        base.SetLink(linkObject);
+        value = linkObject.value;
+        OnChangeLink.Invoke();
     }
 
-    public void UpdateBindValue(LinkObject bindObject)
+    private void OnChangeLinkCallback()
     {
-        value = bindObject.value;
+        print("OnChangeLinkCallback");
+
+        if (linked != null)
+        {
+            
+        }
     }
 }

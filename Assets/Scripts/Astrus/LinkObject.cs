@@ -7,52 +7,45 @@ public abstract class LinkObject : MonoBehaviour
 {
     public float value;
     public string name;
-    public LinkObject linkObject;
+    public LinkObject linked;
 
     [SerializeField] protected TextMeshPro nameText;
     [SerializeField] protected TextMeshPro debugText;
-    [SerializeField] protected string bindRendererTag;
+    [SerializeField] protected Renderer highlightRenderer;
+    [SerializeField] protected LinkParticles linkParticles;
 
     protected TextMesh textDisplay;
     protected TextMesh debugDisplay;
-    protected Renderer highlightRenderer;
+
     protected Material highlightMaterial;
     protected Material originalMaterial;
 
-    public void Construct(Material highlightMaterial)
+    public virtual void Construct(Material highlightMaterial)
     {
         this.highlightMaterial = highlightMaterial;
 
-        Transform foundRenderer = HelperFunctions.RecursiveFindChild(
-            gameObject.transform, bindRendererTag);
-
-        highlightRenderer = foundRenderer.GetComponent<Renderer>();
-
         if (highlightRenderer == null)
         {
-            Debug.LogError(this + " Couldn't find bindRenderer" +
-                " with tag " + bindRendererTag);
+            Debug.LogError(this + " highlightRenderer is null");
         }
 
         originalMaterial = highlightRenderer.material;
+
+        if (linkParticles == null)
+        {
+            Debug.LogError(this + " linkParticles is null");
+        }
     }
 
     private void Update()
     {
         nameText.text = name;
         debugText.text = value.ToString();
-
-        if(linkObject != null)
-        {
-            Debug.DrawLine(gameObject.transform.position,
-                linkObject.gameObject.transform.position,
-                Color.red);
-        }
     }
 
-    public virtual void SetBind(LinkObject bindObject)
+    public virtual void SetLink(LinkObject linkObject)
     {
-        this.linkObject = bindObject;
+        this.linked = linkObject;
     }
 
     public void UpdateMaterial(Material newMaterial)
@@ -68,5 +61,10 @@ public abstract class LinkObject : MonoBehaviour
     public void RemoveHighlight()
     {
         highlightRenderer.material = originalMaterial;
+    }
+
+    public void UpdateLinkParticles()
+    {
+        linkParticles.ChangeLink(linked.transform.position);
     }
 }
