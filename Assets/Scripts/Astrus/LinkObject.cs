@@ -65,6 +65,6 @@ public abstract class LinkObject : MonoBehaviour
 
     public void UpdateLinkParticles()
     {
-        linkParticles.ChangeLink(linked.transform.position);
+        linkParticles.ChangeLink(linked.linkParticles.transform.position);
     }
 }

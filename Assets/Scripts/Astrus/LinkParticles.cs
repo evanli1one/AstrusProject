@@ -24,19 +24,19 @@ public class LinkParticles : MonoBehaviour
 
     public void ChangeLink(Vector3 endpoint)
     {
-        emission.enabled = true;
+        Vector3 currentPosition = gameObject.transform.position;
 
-        float distance = Vector3.Distance(endpoint, startPosition) / 2;
-        Vector3 relativePos = endpoint - startPosition;
-        Quaternion rotation = Quaternion.LookRotation(relativePos);
-        Vector3 offset = startPosition + relativePos / 2;
+        float distance = Vector3.Distance(endpoint, currentPosition) / 2;
+        Vector3 relativePos = endpoint - currentPosition;
+        Vector3 offset = relativePos/2;
 
-        print("distance: " + distance);
-        print("rotation: " + rotation);
-        print("offset: " + offset);
+        float yRotation = VectorUtil.AngleBetweenPoints(currentPosition, endpoint);
+        Vector3 rotationOffset = new Vector3(0, yRotation + 90, 0);
 
-        shape.radius = distance / 2;
-        shape.rotation = rotation.eulerAngles;
+        shape.radius = distance;
+        shape.rotation = rotationOffset;
         shape.position = offset;
+
+        emission.enabled = true;
     }
 }
